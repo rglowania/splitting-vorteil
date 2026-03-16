@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Veranlagungsvergleich · § 26 EStG</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=IBM+Plex+Mono:wght@300;400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+
+/* ═══════════════════════════════════════════════════════════════
+   G-DESIGN — Template v1.0
+   Kopiere diesen Block unverändert in jede neue App.
+   Passe nur die Inhalte unterhalb von "APP CONTENT" an.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Tokens ─────────────────────────────────────────────────── */
+:root,[data-theme="dark"]{
+  --bg:        #0c1410;
+  --surface:   #13201a;
+  --surface2:  #192b22;
+  --border:    #213328;
+  --accent:    #5d9e7a;
+  --accent-lt: #89c4a2;
+  --accent-dim:rgba(93,158,122,0.13);
+  --text:      #ddeee5;
+  --text-muted:#6e9480;
+}
+[data-theme="light"]{
+  --bg:        #f0f7f3;
+  --surface:   #ffffff;
+  --surface2:  #e6f2eb;
+  --border:    #bdd8c8;
+  --accent:    #2e7a50;
+  --accent-lt: #1e5c3a;
+  --accent-dim:rgba(46,122,80,0.10);
+  --text:      #0f1f16;
+  --text-muted:#4d7a5e;
+}
+@media(prefers-color-scheme:light){
+  :root:not([data-theme]){
+    --bg:#f0f7f3;--surface:#ffffff;--surface2:#e6f2eb;--border:#bdd8c8;
+    --accent:#2e7a50;--accent-lt:#1e5c3a;--accent-dim:rgba(46,122,80,0.10);
+    --text:#0f1f16;--text-muted:#4d7a5e;
+  }
+}
+
+/* ── Reset ──────────────────────────────────────────────────── */
+*{box-sizing:border-box;margin:0;padding:0;}
+
+/* ── Body & Background Grid ─────────────────────────────────── */
+body{
+  background:var(--bg);color:var(--text);
+  font-family:'IBM Plex Sans',sans-serif;font-weight:300;
+  min-height:100vh;padding:28px 20px 80px;
+  transition:background .25s,color .25s;
+}
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:
+    linear-gradient(rgba(93,158,122,0.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(93,158,122,0.04) 1px,transparent 1px);
+  background-size:40px 40px;
+}
+
+/* ── Layout ─────────────────────────────────────────────────── */
+.container{max-width:920px;margin:0 auto;position:relative;z-index:1;}
+
+/* ── Theme Toggle ───────────────────────────────────────────── */
+.theme-toggle{
+  position:fixed;top:18px;right:20px;display:flex;gap:3px;
+  z-index:1000;background:var(--surface);border:1px solid var(--border);padding:4px;
+}
+.theme-btn{
+  width:28px;height:28px;background:transparent;border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--text-muted);transition:all .2s;padding:0;
+}
+.theme-btn:hover{color:var(--accent);}
+.theme-btn.active{color:var(--accent);background:var(--accent-dim);}
+.theme-btn svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+
+/* ── Header ─────────────────────────────────────────────────── */
+header{text-align:center;margin-bottom:48px;}
+.badge{
+  display:inline-block;font-family:'IBM Plex Mono',monospace;
+  font-size:10px;letter-spacing:3px;text-transform:uppercase;
+  color:var(--accent);border:1px solid var(--accent-dim);
+  padding:4px 14px;margin-bottom:18px;
+}
+h1{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(26px,5vw,44px);font-weight:600;
+  line-height:1.15;color:var(--text);margin-bottom:10px;
+}
+h1 span{color:var(--accent);}
+.subtitle{
+  font-size:12px;color:var(--text-muted);
+  font-family:'IBM Plex Mono',monospace;letter-spacing:0.5px;
+}
+
+/* ── Variant-Toggle (Header-Buttons für Stichtag etc.) ──────── */
+.variant-toggle{
+  margin-top:16px;display:inline-flex;gap:0;border:1px solid var(--border);
+}
+.variant-btn{
+  background:transparent;border:none;padding:7px 16px;
+  font-family:'IBM Plex Mono',monospace;font-size:10px;
+  letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--text-muted);cursor:pointer;transition:all .2s;
+}
+.variant-btn.active{background:var(--accent-dim);color:var(--accent);}
+
+/* ── Card ───────────────────────────────────────────────────── */
+.card{
+  background:var(--surface);border:1px solid var(--border);
+  padding:24px 28px;margin-bottom:16px;
+  position:relative;transition:background .25s,border-color .25s;
+}
+.card::before{
+  content:'';position:absolute;top:0;left:0;
+  width:3px;height:100%;background:var(--accent);
+}
+.card-title{
+  font-family:'IBM Plex Mono',monospace;font-size:10px;
+  letter-spacing:3px;text-transform:uppercase;
+  color:var(--accent);margin-bottom:18px;
+}
+
+/* ── Accent Card ────────────────────────────────────────────── */
+.accent-card{
+  background:var(--surface);border:1px solid var(--accent);
+  padding:28px;margin-top:20px;transition:background .25s;
+}
+
+/* ── Formular-Elemente ──────────────────────────────────────── */
+select,input[type="number"],input[type="text"]{
+  width:100%;background:var(--surface2);border:1px solid var(--border);
+  color:var(--text);font-family:'IBM Plex Mono',monospace;
+  font-size:12px;padding:6px 8px;outline:none;
+  transition:border-color .2s,background .25s;
+}
+select:focus,input:focus{border-color:var(--accent);}
+input[type="number"]{-moz-appearance:textfield;appearance:textfield;}
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button{-webkit-appearance:none;}
+.hint{
+  font-size:10px;color:var(--text-muted);margin-top:5px;
+  font-family:'IBM Plex Mono',monospace;line-height:1.5;
+}
+.hint b{color:var(--accent-lt);}
+
+/* ── Buttons ────────────────────────────────────────────────── */
+.btn{
+  display:inline-flex;align-items:center;gap:8px;
+  background:transparent;border:1px solid var(--border);
+  color:var(--text-muted);font-family:'IBM Plex Mono',monospace;
+  font-size:11px;letter-spacing:1px;padding:8px 16px;
+  cursor:pointer;transition:all .2s;
+}
+.btn:hover{border-color:var(--accent);color:var(--accent);}
+.btn-primary{border-color:var(--accent);color:var(--accent);}
+.btn-primary:hover{background:var(--accent-dim);}
+.btn-dashed{border-style:dashed;}
+.btn-danger:hover{border-color:#c0554a;color:#c0554a;}
+
+/* ── Toggle / Switch ────────────────────────────────────────── */
+.toggle-label{
+  display:flex;align-items:center;gap:8px;cursor:pointer;
+  font-family:'IBM Plex Mono',monospace;font-size:10px;
+  letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);
+}
+.toggle-wrap{position:relative;display:inline-block;width:36px;height:20px;}
+.toggle-cb{opacity:0;width:0;height:0;position:absolute;}
+.toggle-track{
+  position:absolute;inset:0;background:#222;border-radius:10px;
+  transition:.2s;cursor:pointer;border:1px solid rgba(255,255,255,0.15);
+}
+.toggle-thumb{
+  position:absolute;left:3px;top:3px;width:14px;height:14px;
+  background:#fff;border-radius:50%;transition:.2s;pointer-events:none;
+}
+.toggle-cb:checked ~ .toggle-thumb{left:19px;}
+.toggle-cb:not(:checked) ~ .toggle-track{background:var(--surface2);border-color:var(--border);}
+
+/* ── Ergebnis-Zeilen ────────────────────────────────────────── */
+.result-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:7px 0;border-bottom:1px solid var(--border);font-size:12px;
+}
+.result-row:last-child{border-bottom:none;}
+.result-row .rl{
+  color:var(--text-muted);font-family:'IBM Plex Mono',monospace;
+  font-size:10px;letter-spacing:1px;max-width:68%;
+}
+.result-row .rv{
+  font-family:'IBM Plex Mono',monospace;font-size:14px;
+  font-weight:400;white-space:nowrap;
+}
+.result-total{
+  display:flex;justify-content:space-between;align-items:baseline;
+  padding-top:18px;border-top:1px solid var(--accent);margin-top:8px;
+}
+.result-total-label,.result-total-value{
+  font-family:'IBM Plex Mono',monospace;font-size:16px;font-weight:400;
+}
+
+/* ── Notiz ──────────────────────────────────────────────────── */
+.note{
+  font-size:10px;color:var(--text-muted);margin-top:14px;
+  line-height:1.7;font-family:'IBM Plex Mono',monospace;
+}
+
+/* ── Footer ─────────────────────────────────────────────────── */
+footer{
+  text-align:center;padding:32px 0 24px;
+  font-family:'IBM Plex Mono',monospace;font-size:10px;
+  letter-spacing:1px;color:var(--text-muted);opacity:0.6;
+}
+
+/* ── Responsive ─────────────────────────────────────────────── */
+@media(max-width:680px){
+  .card,.accent-card{padding:18px 16px;}
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ENDE DESIGN SYSTEM — ab hier App-spezifisches CSS
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Header zentriert */
+header{
+  text-align:center;margin-bottom:20px;
+}
+.variant-toggle{margin-top:12px;flex-shrink:0;}
+.variant-btn{border-right:1px solid var(--border);}
+.variant-btn:last-child{border-right:none;}
+
+/* Verdict-Zeile */
+.verdict{
+  display:flex;align-items:center;gap:16px;
+  padding:18px 22px;margin-bottom:16px;
+  background:var(--surface);border:1px solid var(--border);position:relative;
+}
+.verdict::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:var(--text-muted);}
+.verdict.pos::before{background:var(--accent);}
+.verdict.neg::before{background:#c0554a;}
+.verdict-icon{font-size:22px;line-height:1;flex-shrink:0;}
+.verdict-title{font-family:'Playfair Display',serif;font-size:20px;font-weight:600;color:var(--text);line-height:1.2;}
+.v-saving{color:var(--accent);}
+.v-saving.neg{color:#c0554a;}
+.verdict-sub{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text-muted);margin-top:4px;letter-spacing:0.5px;}
+
+/* Vergleichsspalten */
+.compare-cols{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--border);margin-bottom:16px;}
+.compare-col{border-right:1px solid var(--border);}
+.compare-col:last-child{border-right:none;}
+.compare-col-head{
+  font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:2px;
+  text-transform:uppercase;padding:9px 14px;border-bottom:1px solid var(--border);
+  color:var(--text-muted);background:var(--surface2);
+}
+.compare-col.best .compare-col-head{color:var(--accent);background:var(--accent-dim);}
+.cmp-row{display:flex;justify-content:space-between;padding:6px 14px;border-bottom:1px solid var(--border);}
+.cmp-row:last-child{border-bottom:none;}
+.cmp-row .cl{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--text-muted);}
+.cmp-row .cv{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text);}
+.cmp-row.total{background:var(--surface2);}
+.cmp-row.total .cl,.cmp-row.total .cv{color:var(--text);}
+.cmp-row.total .cv{font-size:13px;}
+
+/* Personen-Grid */
+.persons-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+@media(max-width:540px){.persons-grid{grid-template-columns:1fr;}}
+.person-label{
+  font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:3px;
+  text-transform:uppercase;color:var(--text-muted);margin-bottom:12px;
+  border-bottom:1px solid var(--border);padding-bottom:8px;
+}
+.field{margin-bottom:12px;}
+.field:last-child{margin-bottom:0;}
+.field label{
+  display:block;font-family:'IBM Plex Mono',monospace;font-size:9px;
+  letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);margin-bottom:4px;
+}
+
+/* Detailtabelle */
+.dtable{width:100%;border-collapse:collapse;}
+.dtable th{
+  font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:2px;
+  text-transform:uppercase;color:var(--text-muted);padding:8px 10px;
+  border-bottom:1px solid var(--border);text-align:left;
+}
+.dtable th:not(:first-child){text-align:right;}
+.dtable td{padding:7px 10px;border-bottom:1px solid var(--border);font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text);}
+.dtable td:not(:first-child){text-align:right;}
+.dtable tr:last-child td{border-bottom:none;}
+.dtable tr:hover td{background:var(--surface2);}
+.dtable .tr-total td{border-top:1px solid var(--accent);border-bottom:none;font-size:12px;}
+.diff-pos{color:var(--accent);}
+.diff-neg{color:#c0554a;}
+.diff-neu{color:var(--text-muted);}
+
+/* Toggles in Optionszeile */
+.opt-row{
+  margin-top:20px;padding-top:16px;border-top:1px solid var(--border);
+  display:flex;flex-wrap:wrap;gap:20px;align-items:flex-start;
+}
+.toggle-wrap{flex-shrink:0;}
+
+</style>
+</head>
+<body>
+
+<!-- ── Theme Toggle ─────────────────────────────────────────── -->
+<div class="theme-toggle">
+  <button class="theme-btn" id="btn-dark" onclick="setTheme('dark')" title="Dunkel">
+    <svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+  </button>
+  <button class="theme-btn" id="btn-system" onclick="setTheme('system')" title="System">
+    <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+  </button>
+  <button class="theme-btn" id="btn-light" onclick="setTheme('light')" title="Hell">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+  </button>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════
+     APP CONTENT — alles hier anpassen
+     ════════════════════════════════════════════════════════════ -->
+<div class="container">
+
+  <header>
+    <div class="badge" style="display:none"></div>
+    <h1><span>Splitting</span>-Vorteil</h1>
+    <p class="subtitle">Zusammen- vs. Einzelveranlagung &middot; inkl. SolZ, KiSt &amp; Progressionsvorbehalt</p>
+    <div class="variant-toggle">
+      <button class="variant-btn" id="btn-variant-2025" onclick="setJahr(2025)">2025</button>
+      <button class="variant-btn active" id="btn-variant-2026" onclick="setJahr(2026)">2026</button>
+    </div>
+  </header>
+
+  <!-- ERGEBNIS oben -->
+  <div id="verdict" class="verdict">
+    <div class="verdict-icon" id="v-icon">⚖</div>
+    <div>
+      <div class="verdict-title" id="v-title">—</div>
+      <div class="verdict-sub" id="v-sub">—</div>
+    </div>
+  </div>
+
+  <div class="compare-cols">
+    <div class="compare-col" id="col-ev">
+      <div class="compare-col-head">Einzelveranlagung (Σ)</div>
+      <div id="col-ev-body"></div>
+    </div>
+    <div class="compare-col" id="col-zv">
+      <div class="compare-col-head">Zusammenveranlagung</div>
+      <div id="col-zv-body"></div>
+    </div>
+  </div>
+
+  <!-- EINGABEN -->
+  <div class="card">
+    <div class="card-title">Eingaben</div>
+
+    <div class="persons-grid">
+      <div>
+        <div class="person-label">Person A</div>
+        <div class="field">
+          <label>zvE — zu versteuerndes Einkommen</label>
+          <input type="number" id="zve_a" value="65000" min="0" step="100" oninput="berechnen()">
+          <div class="hint">Jahresbetrag in EUR</div>
+        </div>
+        <div class="field">
+          <label>Einkünfte unter Progressionsvorbehalt</label>
+          <input type="number" id="prog_a" value="0" min="0" step="100" oninput="berechnen()">
+          <div class="hint">z.B. Arbeitslosengeld, Elterngeld, Krankengeld · § 32b EStG</div>
+        </div>
+        <div class="field">
+          <label>Kirchensteuer</label>
+          <select id="kirche_a" onchange="berechnen()">
+            <option value="0">Keine</option>
+            <option value="8">8 % — BY, BW</option>
+            <option value="9">9 % — übrige Länder</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <div class="person-label">Person B</div>
+        <div class="field">
+          <label>zvE — zu versteuerndes Einkommen</label>
+          <input type="number" id="zve_b" value="25000" min="0" step="100" oninput="berechnen()">
+          <div class="hint">Jahresbetrag in EUR</div>
+        </div>
+        <div class="field">
+          <label>Einkünfte unter Progressionsvorbehalt</label>
+          <input type="number" id="prog_b" value="0" min="0" step="100" oninput="berechnen()">
+          <div class="hint">z.B. Arbeitslosengeld, Elterngeld, Krankengeld · § 32b EStG</div>
+        </div>
+        <div class="field">
+          <label>Kirchensteuer</label>
+          <select id="kirche_b" onchange="berechnen()">
+            <option value="0">Keine</option>
+            <option value="8">8 % — BY, BW</option>
+            <option value="9">9 % — übrige Länder</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="opt-row">
+      <label class="toggle-label">
+        Kinderfreibetrag (§ 31 EStG)
+        <span class="toggle-wrap">
+          <input type="checkbox" id="opt_kfb" class="toggle-cb" onchange="toggleKfb()">
+          <span class="toggle-track"></span>
+          <span class="toggle-thumb"></span>
+        </span>
+      </label>
+      <div id="kfb-field" style="display:none;">
+        <input type="number" id="kinder" value="1" min="0" max="10" step="1" style="max-width:80px;" oninput="berechnen()">
+        <div class="hint">Anzahl Kinder</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DETAILTABELLE -->
+  <div class="card">
+    <div class="card-title">Detailvergleich</div>
+    <div style="overflow-x:auto;">
+      <table class="dtable">
+        <thead>
+          <tr>
+            <th>Position</th>
+            <th>Einzelveranlagung (Σ)</th>
+            <th>Zusammenveranlagung</th>
+            <th>Differenz</th>
+          </tr>
+        </thead>
+        <tbody id="detail-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- HINWEISE -->
+  <div class="accent-card">
+    <div class="card-title" style="margin-bottom:10px;">Hinweise</div>
+    <p class="note" id="hinweis-text"></p>
+  </div>
+
+</div><!-- /.container -->
+
+<footer>&copy; Robin Glowania</footer>
+
+<!-- ════════════════════════════════════════════════════════════
+     JAVASCRIPT — Theme-Block nie ändern
+     ════════════════════════════════════════════════════════════ -->
+<script>
+// ── Theme ──────────────────────────────────────────────────────
+function setTheme(t) {
+  if (t === 'system') {
+    document.documentElement.removeAttribute('data-theme');
+  } else {
+    document.documentElement.setAttribute('data-theme', t);
+  }
+  try { localStorage.setItem('g-theme', t); } catch(e){}
+  document.querySelectorAll('.theme-btn').forEach(function(b){ b.classList.remove('active'); });
+  var btn = document.getElementById('btn-' + t);
+  if (btn) btn.classList.add('active');
+}
+(function(){
+  var saved = 'system';
+  try { saved = localStorage.getItem('g-theme') || 'system'; } catch(e){}
+  setTheme(saved);
+})();
+
+// ── Toggle Sync ────────────────────────────────────────────────
+// Wird automatisch für alle .toggle-cb Elemente initialisiert.
+// Manueller Aufruf: syncToggle(checkboxElement)
+function syncToggle(cb) {
+  var wrap = cb.closest('.toggle-wrap');
+  if (!wrap) return;
+  var track = wrap.querySelector('.toggle-track');
+  var thumb  = wrap.querySelector('.toggle-thumb');
+  if (track) {
+    track.style.background = cb.checked ? '#222' : 'var(--surface2)';
+    track.style.border = cb.checked
+      ? '1px solid rgba(255,255,255,0.15)'
+      : '1px solid var(--border)';
+  }
+  if (thumb) thumb.style.left = cb.checked ? '19px' : '3px';
+}
+document.querySelectorAll('.toggle-cb').forEach(function(cb){
+  syncToggle(cb);
+  cb.addEventListener('change', function(){ syncToggle(this); });
+});
+
+// ── Variant Toggle (optional) ──────────────────────────────────
+function setVariant(v) {
+  document.querySelectorAll('.variant-btn').forEach(function(b){ b.classList.remove('active'); });
+  var btn = document.getElementById('btn-variant-' + v);
+  if (btn) btn.classList.add('active');
+}
+
+// ════════════════════════════════════════════════════════════════
+// AB HIER: App-spezifischer JavaScript-Code
+// ════════════════════════════════════════════════════════════════
+
+// ── Steuerparameter je Veranlagungszeitraum ────────────────────
+var P = {
+  2025: { gz:12096, z1e:17005, z1a:979.18, z1b:1400, z2e:66760, z2a:192.59, z2b:2397, z2c:1025, z3e:277826, z3f:0.42, z3k:10636, z4f:0.45, z4k:18973, fg_ev:18130, fg_zv:36260, kfb:4800, kg:3060 },
+  2026: { gz:12636, z1e:17820, z1a:979.18, z1b:1400, z2e:68480, z2a:192.59, z2b:2397, z2c:1091, z3e:277826, z3f:0.42, z3k:11311, z4f:0.45, z4k:19642, fg_ev:19950, fg_zv:39900, kfb:4800, kg:3084 }
+};
+var aktJahr = 2026;
+
+function setJahr(j) {
+  aktJahr = j;
+  document.querySelectorAll('.variant-btn').forEach(function(b){ b.classList.remove('active'); });
+  document.getElementById('btn-variant-' + j).classList.add('active');
+  berechnen();
+}
+
+// § 32a EStG
+function ESt(x, p) {
+  x = Math.max(0, Math.floor(x));
+  if (x <= p.gz) return 0;
+  if (x <= p.z1e) { var y=(x-p.gz)/10000; return Math.floor((p.z1a*y+p.z1b)*y); }
+  if (x <= p.z2e) { var z=(x-p.z1e)/10000; return Math.floor((p.z2a*z+p.z2b)*z+p.z2c); }
+  if (x <= p.z3e) return Math.floor(p.z3f*x - p.z3k);
+  return Math.floor(p.z4f*x - p.z4k);
+}
+
+// SolZ § 3 SolZG — Freigrenze + Milderungszone
+function SolZ(est, fg) {
+  if (est <= fg) return 0;
+  return Math.min(est * 0.055, (est - fg) * 0.20);
+}
+
+function fmt(v) {
+  return v.toLocaleString('de-DE', {minimumFractionDigits:2, maximumFractionDigits:2}) + '\u00a0€';
+}
+function fmtD(v) {
+  return (v > 0 ? '+' : '') + v.toLocaleString('de-DE', {minimumFractionDigits:2, maximumFractionDigits:2}) + '\u00a0€';
+}
+
+function toggleKfb() {
+  var on = document.getElementById('opt_kfb').checked;
+  document.getElementById('kfb-field').style.display = on ? 'block' : 'none';
+  berechnen();
+}
+
+function berechnen() {
+  var p    = P[aktJahr];
+  var zA   = parseFloat(document.getElementById('zve_a').value) || 0;
+  var zB   = parseFloat(document.getElementById('zve_b').value) || 0;
+  var pA   = parseFloat(document.getElementById('prog_a').value) || 0;  // Progressionseinkünfte A
+  var pB   = parseFloat(document.getElementById('prog_b').value) || 0;  // Progressionseinkünfte B
+  var kA   = parseFloat(document.getElementById('kirche_a').value) || 0;
+  var kB   = parseFloat(document.getElementById('kirche_b').value) || 0;
+  var soli = true;
+  var kfb  = document.getElementById('opt_kfb').checked;
+  var kind = parseInt(document.getElementById('kinder').value) || 0;
+
+  // Progressionsvorbehalt § 32b EStG:
+  // Steuersatz = ESt(zvE + Prog) / (zvE + Prog), angewendet auf zvE
+  function EStMitProg(zve, prog, p) {
+    if (zve <= 0) return 0;
+    if (prog <= 0) return ESt(zve, p);
+    var basis = zve + prog;
+    var estBasis = ESt(basis, p);
+    var satz = estBasis / basis; // Progressionssteuersatz
+    return Math.floor(zve * satz);
+  }
+
+  // ── Einzelveranlagung ──────────────────────────────────────────
+  var zvA = zA, zvB = zB;
+  if (kfb && kind > 0) {
+    // Günstigerprüfung ohne Prog-Einkünfte (Freibetrag mindert zvE)
+    var ersEV = (EStMitProg(zA,pA,p)+EStMitProg(zB,pB,p))
+              - (EStMitProg(Math.max(0,zA-kind*p.kfb),pA,p)+EStMitProg(Math.max(0,zB-kind*p.kfb),pB,p));
+    if (ersEV > kind*p.kg) { zvA = Math.max(0,zA-kind*p.kfb); zvB = Math.max(0,zB-kind*p.kfb); }
+  }
+  var eA = EStMitProg(zvA, pA, p);
+  var eB = EStMitProg(zvB, pB, p);
+  var sA=soli?SolZ(eA,p.fg_ev):0, sB=soli?SolZ(eB,p.fg_ev):0;
+  var kiA=eA*kA/100, kiB=eB*kB/100;
+  var evE=eA+eB, evS=sA+sB, evK=kiA+kiB, evG=evE+evS+evK;
+
+  // ── Zusammenveranlagung ────────────────────────────────────────
+  // Bei ZV: gemeinsamer Progressionsvorbehalt auf halbes zvE + halbes Prog
+  // Splittingformel mit Progressionsvorbehalt:
+  // Steuersatz aus (zvE_ges/2 + Prog_ges/2), angewendet auf zvE_ges/2, dann × 2
+  function EStZVMitProg(zveGes, progGes, p) {
+    if (zveGes <= 0) return 0;
+    if (progGes <= 0) return ESt(zveGes / 2, p) * 2;
+    var halbBasis = (zveGes + progGes) / 2;
+    var estHalb   = ESt(halbBasis, p);
+    var satz      = estHalb / halbBasis;
+    return Math.floor((zveGes / 2) * satz) * 2;
+  }
+
+  var zG=zA+zB, zGr=zG;
+  var pG=pA+pB;
+  if (kfb && kind > 0) {
+    var kfbGes = kind*2*p.kfb;
+    var ersZV = EStZVMitProg(zG, pG, p) - EStZVMitProg(Math.max(0,zG-kfbGes), pG, p);
+    if (ersZV > kind*p.kg) zGr = Math.max(0, zG-kfbGes);
+  }
+  var ezv = EStZVMitProg(zGr, pG, p);
+  var szv=soli?SolZ(ezv,p.fg_zv):0;
+  var ant=zG>0?zA/zG:0.5;
+  var kizv=ezv*ant*kA/100 + ezv*(1-ant)*kB/100;
+  var zvG=ezv+szv+kizv;
+
+  var diff = evG - zvG; // positiv = ZV günstiger
+
+  // ── Verdict ────────────────────────────────────────────────────
+  var vEl = document.getElementById('verdict');
+  vEl.className = 'verdict ' + (Math.abs(diff)<0.5 ? '' : diff>0 ? 'pos' : 'neg');
+  document.getElementById('v-icon').textContent = Math.abs(diff)<0.5 ? '⚖' : diff>0 ? '✓' : '✗';
+  if (Math.abs(diff) < 0.5) {
+    document.getElementById('v-title').innerHTML = 'Kein Unterschied';
+    document.getElementById('v-sub').textContent = 'Beide Veranlagungsformen führen zum gleichen Ergebnis · VZ ' + aktJahr;
+  } else if (diff > 0) {
+    document.getElementById('v-title').innerHTML = 'Zusammenveranlagung spart <span class="v-saving">' + fmt(Math.abs(diff)) + '</span>';
+    document.getElementById('v-sub').textContent = 'Splittingvorteil durch Zusammenveranlagung (§ 26b EStG) · VZ ' + aktJahr;
+  } else {
+    document.getElementById('v-title').innerHTML = 'Einzelveranlagung spart <span class="v-saving neg">' + fmt(Math.abs(diff)) + '</span>';
+    document.getElementById('v-sub').textContent = 'Progressionseffekt — Einzelveranlagung günstiger · VZ ' + aktJahr;
+  }
+
+  // ── Vergleichsspalten ──────────────────────────────────────────
+  function colHtml(e, s, k, g) {
+    var h = '<div class="cmp-row"><span class="cl">Einkommensteuer</span><span class="cv">' + fmt(e) + '</span></div>';
+    if (soli) h += '<div class="cmp-row"><span class="cl">SolZ</span><span class="cv">' + fmt(s) + '</span></div>';
+    if (k > 0) h += '<div class="cmp-row"><span class="cl">Kirchensteuer</span><span class="cv">' + fmt(k) + '</span></div>';
+    h += '<div class="cmp-row total"><span class="cl">Gesamt</span><span class="cv">' + fmt(g) + '</span></div>';
+    return h;
+  }
+  document.getElementById('col-ev').className = 'compare-col' + (diff<=0 ? ' best' : '');
+  document.getElementById('col-zv').className = 'compare-col' + (diff>0  ? ' best' : '');
+  document.getElementById('col-ev-body').innerHTML = colHtml(evE, evS, evK, evG);
+  document.getElementById('col-zv-body').innerHTML = colHtml(ezv, szv, kizv, zvG);
+
+  // ── Detailtabelle ──────────────────────────────────────────────
+  var rows = [{l:'Einkommensteuer', s:'§ 32a EStG · Grund-/Splittingtabelle', ev:evE, zv:ezv}];
+  if (soli) rows.push({l:'Solidaritätszuschlag', s:'§ 3 SolZG · Freigrenze geprüft', ev:evS, zv:szv});
+  if (evK>0||kizv>0) rows.push({l:'Kirchensteuer', s:'auf ESt-Schuld', ev:evK, zv:kizv});
+  rows.push({l:'Steuerbelastung gesamt', s:'ESt + SolZ + KiSt', ev:evG, zv:zvG, tot:true});
+  var html = '';
+  rows.forEach(function(r) {
+    var d=r.zv-r.ev, dc=Math.abs(d)<0.005?'diff-neu':d<0?'diff-pos':'diff-neg', ds=Math.abs(d)<0.005?'—':fmtD(d);
+    html += '<tr' + (r.tot?' class="tr-total"':'') + '>';
+    html += '<td>' + r.l + '<br><span style="font-size:9px;color:var(--text-muted);">' + r.s + '</span></td>';
+    html += '<td>' + fmt(r.ev) + '</td><td>' + fmt(r.zv) + '</td><td class="' + dc + '">' + ds + '</td></tr>';
+  });
+  document.getElementById('detail-tbody').innerHTML = html;
+
+  // ── Hinweis ────────────────────────────────────────────────────
+  document.getElementById('hinweis-text').innerHTML =
+    '<b>Berechnung VZ ' + aktJahr + ':</b> ESt nach § 32a EStG (Grundtabelle / Splittingtabelle). Grundfreibetrag: ' + p.gz.toLocaleString('de-DE') + '\u00a0€. Splittingverfahren: zvE ÷ 2 → ESt × 2.<br><br>' +
+    '<b>Progressionsvorbehalt § 32b EStG:</b> Steuerfreie Lohnersatzleistungen (Arbeitslosengeld I, Elterngeld, Krankengeld etc.) erhöhen nicht das zvE, wohl aber den anzuwendenden Steuersatz. Bei EV wird der Satz je Person einzeln ermittelt; bei ZV aus dem gemeinsamen Gesamtbetrag (Splitting). Progressionseinkünfte wirken sich bei ZV tendenziell stärker aus und können den Splittingvorteil mindern.<br><br>' +
+    '<b>Solidaritätszuschlag:</b> Freigrenze ' + p.fg_ev.toLocaleString('de-DE') + '\u00a0€ ESt (EV) / ' + p.fg_zv.toLocaleString('de-DE') + '\u00a0€ (ZV). Milderungszone: 20\u00a0% des Mehrbetrags, max. 5,5\u00a0% der ESt.<br><br>' +
+    '<b>Kirchensteuer:</b> Je Person separat auf ESt-Schuld. Bei ZV Aufteilung nach zvE-Verhältnis.<br><br>' +
+    (kfb ? '<b>Kinderfreibetrag:</b> KFB + BEA = ' + p.kfb.toLocaleString('de-DE') + '\u00a0€ je Elternteil. Günstigerprüfung § 31 EStG vs. Kindergeld ' + p.kg.toLocaleString('de-DE') + '\u00a0€ p.a. je Kind.<br><br>' : '') +
+    '⚠ Kein Ersatz für steuerliche Beratung. Individuelle Besonderheiten bleiben unberücksichtigt.';
+}
+
+window.addEventListener('DOMContentLoaded', function(){ berechnen(); });
+
+</script>
+</body>
+</html>
