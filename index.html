@@ -82,7 +82,7 @@ body::before{
 .theme-btn svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
 
 /* ── Header ─────────────────────────────────────────────────── */
-header{text-align:center;margin-bottom:48px;}
+header{text-align:center;margin-bottom:28px;}
 .badge{
   display:inline-block;font-family:'IBM Plex Mono',monospace;
   font-size:10px;letter-spacing:3px;text-transform:uppercase;
@@ -308,6 +308,9 @@ header{
 }
 .toggle-wrap{flex-shrink:0;}
 
+/* Part of gTools Link Hover */
+#gtools-link:hover{color:var(--accent)!important;border-color:var(--accent)!important;}
+
 </style>
 </head>
 <body>
@@ -331,10 +334,12 @@ header{
 <div class="container">
 
   <header>
-    <div class="badge" style="display:none"></div>
     <h1><span>Splitting</span>-Vorteil</h1>
-    <p class="subtitle">Zusammen- vs. Einzelveranlagung &middot; inkl. SolZ, KiSt &amp; Progressionsvorbehalt</p>
-    <div class="variant-toggle">
+    <div style="display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:6px;">
+      <p class="subtitle" style="margin:0;">Zusammen- vs. Einzelveranlagung &middot; inkl. SolZ, KiSt &amp; Progressionsvorbehalt</p>
+      <a href="https://rglowania.github.io/gtools/" id="gtools-link" style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.5px;color:var(--text-muted);text-decoration:none;border:1px solid var(--border);padding:3px 10px;transition:color .2s,border-color .2s;">Part of gTools ↗</a>
+    </div>
+    <div class="variant-toggle" style="margin-top:14px;">
       <button class="variant-btn" id="btn-variant-2025" onclick="setJahr(2025)">2025</button>
       <button class="variant-btn active" id="btn-variant-2026" onclick="setJahr(2026)">2026</button>
     </div>
@@ -369,12 +374,12 @@ header{
         <div class="person-label">Person A</div>
         <div class="field">
           <label>zvE — zu versteuerndes Einkommen</label>
-          <input type="number" id="zve_a" value="65000" min="0" step="100" oninput="berechnen()">
+          <input type="text" inputmode="numeric" id="zve_a" value="65.000" oninput="onNumInput(this)">
           <div class="hint">Jahresbetrag in EUR</div>
         </div>
         <div class="field">
           <label>Einkünfte unter Progressionsvorbehalt</label>
-          <input type="number" id="prog_a" value="0" min="0" step="100" oninput="berechnen()">
+          <input type="text" inputmode="numeric" id="prog_a" value="0" oninput="onNumInput(this)">
           <div class="hint">z.B. Arbeitslosengeld, Elterngeld, Krankengeld · § 32b EStG</div>
         </div>
         <div class="field">
@@ -390,12 +395,12 @@ header{
         <div class="person-label">Person B</div>
         <div class="field">
           <label>zvE — zu versteuerndes Einkommen</label>
-          <input type="number" id="zve_b" value="25000" min="0" step="100" oninput="berechnen()">
+          <input type="text" inputmode="numeric" id="zve_b" value="25.000" oninput="onNumInput(this)">
           <div class="hint">Jahresbetrag in EUR</div>
         </div>
         <div class="field">
           <label>Einkünfte unter Progressionsvorbehalt</label>
-          <input type="number" id="prog_b" value="0" min="0" step="100" oninput="berechnen()">
+          <input type="text" inputmode="numeric" id="prog_b" value="0" oninput="onNumInput(this)">
           <div class="hint">z.B. Arbeitslosengeld, Elterngeld, Krankengeld · § 32b EStG</div>
         </div>
         <div class="field">
@@ -451,7 +456,7 @@ header{
 
 </div><!-- /.container -->
 
-<footer>&copy; Robin Glowania &middot; Zuletzt aktualisiert: 05.05.2025</footer>
+<footer>&copy; Robin Glowania &middot; Zuletzt aktualisiert: 17.05.2026</footer>
 
 <!-- ════════════════════════════════════════════════════════════
      JAVASCRIPT — Theme-Block nie ändern
@@ -508,9 +513,11 @@ function setVariant(v) {
 // ════════════════════════════════════════════════════════════════
 
 // ── Steuerparameter je Veranlagungszeitraum ────────────────────
+// Rechtsstand: § 32a EStG i.d.F. Steuerfortentwicklungsgesetz v. 23.12.2024
+// Quelle: BMF / gesetze-im-internet.de
 var P = {
-  2025: { gz:12096, z1e:17005, z1a:979.18, z1b:1400, z2e:66760, z2a:192.59, z2b:2397, z2c:1025, z3e:277826, z3f:0.42, z3k:10636, z4f:0.45, z4k:18973, fg_ev:18130, fg_zv:36260, kfb:4800, kg:3060 },
-  2026: { gz:12636, z1e:17820, z1a:979.18, z1b:1400, z2e:68480, z2a:192.59, z2b:2397, z2c:1091, z3e:277826, z3f:0.42, z3k:11311, z4f:0.45, z4k:19642, fg_ev:19950, fg_zv:39900, kfb:4800, kg:3084 }
+  2025: { gz:12096, z1e:17443, z1a:932.30, z1b:1400, z2e:68480, z2a:176.64, z2b:2397, z2c:1015.13, z3e:277825, z3f:0.42, z3k:10911.92, z4f:0.45, z4k:19246.67, fg_ev:19950, fg_zv:39900, kfb:4800, kg:3060 },
+  2026: { gz:12348, z1e:17799, z1a:914.51, z1b:1400, z2e:69878, z2a:173.10, z2b:2397, z2c:1034.87, z3e:277825, z3f:0.42, z3k:11135.63, z4f:0.45, z4k:19470.38, fg_ev:20350, fg_zv:40700, kfb:6342, kg:3108 }
 };
 var aktJahr = 2026;
 
@@ -544,6 +551,31 @@ function fmtD(v) {
   return (v > 0 ? '+' : '') + v.toLocaleString('de-DE', {minimumFractionDigits:2, maximumFractionDigits:2}) + '\u00a0€';
 }
 
+// Deutsche Zahlenformatierung für Eingabefelder
+function parseDe(s) {
+  if (typeof s !== 'string') s = String(s || '');
+  s = s.replace(/\./g, '').replace(',', '.').replace(/[^\d.-]/g, '');
+  var n = parseFloat(s);
+  return isNaN(n) ? 0 : n;
+}
+function fmtInput(v) {
+  return Math.round(v).toLocaleString('de-DE');
+}
+function onNumInput(el) {
+  // Cursor-Position grob beibehalten
+  var caret = el.selectionStart;
+  var rawBefore = el.value;
+  var n = parseDe(rawBefore);
+  var formatted = n === 0 && rawBefore.replace(/[.,\s]/g,'') === '' ? '' : fmtInput(n);
+  // Differenz der Punkte berechnen → Cursor korrigieren
+  var dotsBefore = (rawBefore.substring(0, caret).match(/\./g) || []).length;
+  el.value = formatted;
+  var dotsAfter = (formatted.substring(0, caret).match(/\./g) || []).length;
+  var newCaret = Math.max(0, caret + (dotsAfter - dotsBefore));
+  try { el.setSelectionRange(newCaret, newCaret); } catch(e){}
+  berechnen();
+}
+
 function toggleKfb() {
   var on = document.getElementById('opt_kfb').checked;
   document.getElementById('kfb-field').style.display = on ? 'block' : 'none';
@@ -552,10 +584,10 @@ function toggleKfb() {
 
 function berechnen() {
   var p    = P[aktJahr];
-  var zA   = parseFloat(document.getElementById('zve_a').value) || 0;
-  var zB   = parseFloat(document.getElementById('zve_b').value) || 0;
-  var pA   = parseFloat(document.getElementById('prog_a').value) || 0;  // Progressionseinkünfte A
-  var pB   = parseFloat(document.getElementById('prog_b').value) || 0;  // Progressionseinkünfte B
+  var zA   = parseDe(document.getElementById('zve_a').value);
+  var zB   = parseDe(document.getElementById('zve_b').value);
+  var pA   = parseDe(document.getElementById('prog_a').value);  // Progressionseinkünfte A
+  var pB   = parseDe(document.getElementById('prog_b').value);  // Progressionseinkünfte B
   var kA   = parseFloat(document.getElementById('kirche_a').value) || 0;
   var kB   = parseFloat(document.getElementById('kirche_b').value) || 0;
   var soli = true;
@@ -664,7 +696,7 @@ function berechnen() {
     '<b>Solidaritätszuschlag:</b> Freigrenze ' + p.fg_ev.toLocaleString('de-DE') + '\u00a0€ ESt (EV) / ' + p.fg_zv.toLocaleString('de-DE') + '\u00a0€ (ZV). Milderungszone: 20\u00a0% des Mehrbetrags, max. 5,5\u00a0% der ESt.<br><br>' +
     '<b>Kirchensteuer:</b> Je Person separat auf ESt-Schuld. Bei ZV Aufteilung nach zvE-Verhältnis.<br><br>' +
     (kfb ? '<b>Kinderfreibetrag:</b> KFB + BEA = ' + p.kfb.toLocaleString('de-DE') + '\u00a0€ je Elternteil. Günstigerprüfung § 31 EStG vs. Kindergeld ' + p.kg.toLocaleString('de-DE') + '\u00a0€ p.a. je Kind.<br><br>' : '') +
-    '⚠ Kein Ersatz für steuerliche Beratung. Individuelle Besonderheiten bleiben unberücksichtigt.';
+    'Alle Berechnungen sind Näherungswerte auf Basis der jeweils angegebenen Rechtsgrundlagen. Individuelle Faktoren bleiben unberücksichtigt. Kein Ersatz für individuelle Steuer- oder Rechtsberatung · Alle Angaben ohne Gewähr.';
 }
 
 window.addEventListener('DOMContentLoaded', function(){ berechnen(); });
